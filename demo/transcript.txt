@@ -1,0 +1,48 @@
+# depsignal demo - real CLI output
+# part 1: LIVE audit against PyPI (no auth)
+
+$ depsignal audit requirements.txt --limit 3
+package   version  verdict  findings
+--------  -------  -------  --------
+django    4.2      FAIL     44 finding(s)
+pillow    13.0.0   PASS     0 finding(s) (resolved to latest)
+requests  2.34.2   PASS     0 finding(s) (resolved to latest)
+
+django==4.2 (FAIL)
+  [FAIL] Known vulnerability GHSA-r3xc-prgr-mg9p
+        GHSA-r3xc-prgr-mg9p affects 4.2 (fixed in 4.2.1); also known as BIT-django-2023-31047, CVE-2023-31047, PYSEC-2023-61
+        source: https://osv.dev/vulnerability/GHSA-r3xc-prgr-mg9p
+  [FAIL] Known vulnerability GHSA-jh3w-4vvf-mjgr
+        GHSA-jh3w-4vvf-mjgr affects 4.2 (fixed in 4.2.3); also known as BIT-django-2023-36053, CVE-2023-36053, PYSEC-2023-100
+        source: https://osv.dev/vulnerability/GHSA-jh3w-4vvf-mjgr
+  [FAIL] Known vulnerability PYSEC-2023-222
+        PYSEC-2023-222 affects 4.2 (fixed in 4.2.7); also known as BIT-django-2023-46695, CVE-2023-46695, GHSA-qmf9-6jqf-j8fq
+        source: https://osv.dev/vulnerability/PYSEC-2023-222
+  ... and 41 more finding(s) (run with --json for the full list)
+pillow==13.0.0 (PASS)
+  no findings
+requests==2.34.2 (PASS)
+  no findings
+
+3 package(s): 1 FAIL, 0 WARN, 2 PASS
+verdict: FAIL - at least one dependency failed the gate (exit 1)
+exit: 1
+
+# part 2: RECORDED FIXTURE replay - litellm==1.107.0
+# (1.107.0 was removed from PyPI on 21 Oct 2026; this replay
+#  runs against a local fixture server with payloads recorded
+#  2026-11-15, labelled in test/fixtures/litellm-1.107.0.*)
+
+$ depsignal audit litellm.txt --pypi-base http://127.0.0.1:PORT
+package  version  verdict  findings
+-------  -------  -------  --------
+litellm  1.107.0  FAIL     1 finding(s)
+
+litellm==1.107.0 (FAIL)
+  [FAIL] Change of provenance vs previous release
+        Provenance state changed none -> full between 1.106.2 and 1.107.0: attestations appeared from a previously unattested release. Provenance alone cannot prove the new publisher is the same as the old one.
+        source: https://pypi.org/simple/litellm/
+
+1 package(s): 1 FAIL, 0 WARN, 0 PASS
+verdict: FAIL - at least one dependency failed the gate (exit 1)
+exit: 1

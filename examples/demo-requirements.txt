@@ -1,0 +1,5 @@
+# Demo requirements file: one known-vulnerable pin, two unpinned
+# packages that resolve to their latest stable release.
+django==4.2
+pillow
+requests

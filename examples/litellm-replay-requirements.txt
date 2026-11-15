@@ -1,0 +1,6 @@
+# Recorded-fixture replay of the LiteLLM 1.107.0 incident.
+# 1.107.0 no longer exists on PyPI, so this runs against the local
+# fixture server (test/fixtures/litellm-1.107.0.simple.json +
+# litellm-1.107.0.json), which reconstructs the 21 Oct 2026 payloads
+# from published reports. See scripts/capture-demo.sh.
+litellm==1.107.0
